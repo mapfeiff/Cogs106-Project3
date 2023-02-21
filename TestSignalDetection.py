@@ -49,5 +49,37 @@ class TestSignalDetection(unittest.TestCase):
         # Compare calculated and expected criterion
         self.assertEqual(obtained, expected)
 
+    def test_corruption_hits(self):
+        sd = SignalDetection(1,2,3,4)
+        sd.hits = -1
+        #ensure error is raised in all methods where "hits" is used
+        self.assertRaises(ValueError, sd.get_hit_rate)
+        self.assertRaises(ValueError, sd.d_prime)
+        self.assertRaises(ValueError, sd.criterion)
+    
+    def test_corruption_misses(self):
+        sd = SignalDetection(1,2,3,4)
+        sd.misses = -1
+        #ensure error is raised in all methods where "misses" is used
+        self.assertRaises(ValueError, sd.get_hit_rate)
+        self.assertRaises(ValueError, sd.d_prime)
+        self.assertRaises(ValueError, sd.criterion)
+
+    def test_corruption_falseAlarms(self):
+        sd = SignalDetection(1,2,3,4)
+        sd.falseAlarms = -1
+        #ensure error is raised in all methods where "falseAlarms" is used
+        self.assertRaises(ValueError, sd.get_falseAlarm_rate)
+        self.assertRaises(ValueError, sd.d_prime)
+        self.assertRaises(ValueError, sd.criterion)
+
+    def test_corruption_correctRejections(self):
+        sd = SignalDetection(1,2,3,4)
+        sd.correctRejections = -1
+        #ensure error is raised in all methods where "correctRejections" is used
+        self.assertRaises(ValueError, sd.get_falseAlarm_rate)
+        self.assertRaises(ValueError, sd.d_prime)
+        self.assertRaises(ValueError, sd.criterion)
+
 if __name__ == '__main__':
     unittest.main()
