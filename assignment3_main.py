@@ -41,6 +41,11 @@ class SignalDetection:
     def __mul__(self, scalar):
         return SignalDetection(self.hits * scalar, self.misses * scalar, self.falseAlarms * scalar, self.correctRejections * scalar)
 
+    #def plot_roc(SignalDetection):
+
+    #def plot_sdt(SignalDetection):
+
+
 #!/usr/bin/python3.8
 
 import unittest
