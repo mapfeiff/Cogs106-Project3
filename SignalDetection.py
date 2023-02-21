@@ -21,23 +21,17 @@ class SignalDetection:
 
     #class method to calculate d': Z(H) - Z(FA), Z = stats.norm.ppf
     def d_prime(self):
-        #get hit rate
-        hit_rate = self.hit_rate()
-        falseAlarm_rate = self.falseAlarm_rate()
         #get z values
-        z_hit = stats.norm.ppf(hit_rate) 
-        z_falseAlarm = stats.norm.ppf(falseAlarm_rate)
+        z_hit = stats.norm.ppf(self.hit_rate()) 
+        z_falseAlarm = stats.norm.ppf(self.falseAlarm_rate())
         #return d'
         return z_hit-z_falseAlarm
 
     #class method to get the criterion: -0.5*(Z(H) + Z(FA)), Z = stats.norm.ppf
     def criterion(self):
-        #get hit rates
-        hit_rate = self.hit_rate()
-        falseAlarm_rate = self.falseAlarm_rate()
         #get Z values
-        z_hit = stats.norm.ppf(hit_rate)
-        z_falseAlarm = stats.norm.ppf(falseAlarm_rate)
+        z_hit = stats.norm.ppf(self.hit_rate())
+        z_falseAlarm = stats.norm.ppf(self.falseAlarm_rate())
         #return criterion
         return -0.5*(z_hit + z_falseAlarm)
 
