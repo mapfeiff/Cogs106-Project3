@@ -13,10 +13,16 @@ class SignalDetection:
 
     #class method to get the hit rate: hits/total signal trials
     def hit_rate(self):
+        #Check for Corruption
+        if(self.hits < 0 or self.misses < 0):
+            raise ValueError("Hits or Misses cannot be negative!")
         return self.hits / (self.hits + self.misses)
 
     #class method to get the false alarm rate: false alarms/total noise trials
     def falseAlarm_rate(self):
+        #Check for Corruption
+        if(self.falseAlarms < 0 or self.correctRejections < 0):
+            raise ValueError("False Alarms or Correct Rejections cannot be negative!")
         return self.falseAlarms / (self.falseAlarms + self.correctRejections)
 
     #class method to calculate d': Z(H) - Z(FA), Z = stats.norm.ppf
