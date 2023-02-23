@@ -97,6 +97,14 @@ class TestSignalDetection(unittest.TestCase):
         # Compare calculated and expected criterion
         self.assertEqual(obtained, expected)
 
+    def test_corruption(self):
+        sd   = SignalDetection(15, 5, 15, 5)
+        obtained_1 = sd.d_prime()
+        sd   = SignalDetection(15, 10, 15, 5)
+        obtained_2 = sd.d_prime()
+        # Compare calculated and expected d-prime
+        self.assertAlmostEqual(obtained_1, obtained_2, places=10)
+
 if __name__ == '__main__':
     unittest.main()
 
