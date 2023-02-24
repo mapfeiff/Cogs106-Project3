@@ -43,6 +43,29 @@ class SignalDetection:
         #return criterion
         return -0.5*(z_hit + z_falseAlarm)
 
+    def plot_roc(self):
+        threshold_list = np.arange(-10, 10, 0.01)
+        x_points = []
+        y_points = []
+        for threshold in threshold_list:
+            FP = 1-stats.norm.cdf(threshold, 0, 1) #noise curve
+            TP = 1-stats.norm.cdf(threshold, self.d_prime(), 1) #signal curve
+            x_points.append(FP)
+            y_points.append(TP)
+
+        plt.plot(x_points, y_points, '-', linewidth = 2)
+        plt.plot([self.falseAlarm_rate()], [self.hit_rate()], 'o')
+        plt.annotate("Classifying Threshold Point", xy = (self.falseAlarm_rate(), self.hit_rate()),
+                    xytext=(self.falseAlarm_rate()+0.1, self.hit_rate()-0.1),
+                    arrowprops=dict(facecolor='black', shrink=0.05))
+        plt.plot([0, 1], [0, 1], '--')
+        plt.title('Receiver Operating Characteristic')
+        plt.xlim([0, 1])
+        plt.ylim([0, 1])
+        plt.ylabel('Hit Rate')
+        plt.xlabel('False Alarm Rate')
+        plt.show()
+
     #Plot the signal detection theory plot for the given object
     def plot_sdt(self):
         x = np.arange(-5, 5, 0.01)
@@ -73,6 +96,3 @@ class SignalDetection:
         plt.title("Signal Detection Theory Plot")
         plt.ylim(0, 0.5)
         plt.show()
-
-#sd = SignalDetection(75, 10, 55, 25)
-#sd.plot_sdt()
