@@ -12,19 +12,22 @@ class SignalDetection:
         self.misses = misses
         self.falseAlarms = falseAlarms
         self.correctRejections = correctRejections
+        #Check for invalid input
+        if(self.__variable_isInvalid()):
+            raise ValueError("SDT values must be positive!")
 
     #class method to get the hit rate: hits/total signal trials
     def hit_rate(self):
         #Check for Corruption
-        if(self.hits < 0 or self.misses < 0):
-            raise ValueError("Hits or Misses cannot be negative!")
+        if(self.__variable_isInvalid()):
+            raise ValueError("SDT values must be positive!")
         return self.hits / (self.hits + self.misses)
 
     #class method to get the false alarm rate: false alarms/total noise trials
     def falseAlarm_rate(self):
         #Check for Corruption
-        if(self.falseAlarms < 0 or self.correctRejections < 0):
-            raise ValueError("False Alarms or Correct Rejections cannot be negative!")
+        if(self.__variable_isInvalid()):
+            raise ValueError("SDT values must be positive!")
         return self.falseAlarms / (self.falseAlarms + self.correctRejections)
 
     #class method to calculate d': Z(H) - Z(FA), Z = stats.norm.ppf
@@ -44,9 +47,13 @@ class SignalDetection:
         return -0.5*(z_hit + z_falseAlarm)
     
     def __add__(self, other):
+        if(self.__variable_isInvalid() or other.__variable_isInvalid()):
+            raise ValueError("SDT values must be positive!")
         return SignalDetection(self.hits + other.hits, self.misses + other.misses, self.falseAlarms + other.falseAlarms, self.correctRejections + other.correctRejections)
 
     def __mul__(self, scalar):
+        if(self.__variable_isInvalid()):
+            raise ValueError("SDT values must be positive!")
         return SignalDetection(self.hits * scalar, self.misses * scalar, self.falseAlarms * scalar, self.correctRejections * scalar)
 
     def plot_roc(self):
@@ -102,3 +109,12 @@ class SignalDetection:
         plt.title("Signal Detection Theory Plot")
         plt.ylim(0, 0.5)
         plt.show()
+
+    def __variable_isInvalid(self):
+        if(self.hits <= 0 or 
+           self.misses <= 0 or
+           self.falseAlarms <= 0 or
+           self.correctRejections <= 0):
+            return(True)
+        
+        return(False)
