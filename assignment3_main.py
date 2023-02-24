@@ -1,5 +1,11 @@
 #Import needed library
 import scipy.stats as stats
+#Plot
+import matplotlib.pyplot as plt
+import sklearn.metrics as metrics
+
+import numpy as np
+from scipy.optimize import curve_fit
 
 #Implement class based on signal detection theory
 class SignalDetection:
@@ -41,7 +47,44 @@ class SignalDetection:
     def __mul__(self, scalar):
         return SignalDetection(self.hits * scalar, self.misses * scalar, self.falseAlarms * scalar, self.correctRejections * scalar)
 
-    #def plot_roc(SignalDetection):
+    def plot_roc(self):
+        x = np.array([0, self.falseAlarm_rate(), 1])
+        y = np.array([0, self.hit_rate(), 1])
+        plt.plot(x, y, 'o', label='Original points')
+        plt.plot(x, y, '-')
+        plt.title('Receiver Operating Characteristic')
+        plt.xlim([0, 1])
+        plt.ylim([0, 1])
+        plt.ylabel('Hit Rate')
+        plt.xlabel('False Alarm Rate')
+        plt.show()
+        
+        #def fun(x, a, b, c):
+            #return a * np.cosh(b * x )+ c
+        #coef,_ = curve_fit(fun, x, y)
+        #plt.plot(np.linspace(x[0],x[-1]), fun(np.linspace(x[0],x[-1]), *coef))
+        #plt.plot(self.falseAlarm_rate(), self.hit_rate())
+        #plt.plot([0, 1], ls="--")
+        #plt.plot([0, 0], [1, 1] , c=".7")
+        #plt.plot([1, 1] , c=".7")
+
+    #def plot_roc(self):
+        #roc_auc = metrics.auc(self.falseAlarm_rate(), self.hit_rate())
+        #plt.title('Receiver Operating Characteristic')
+        #plt.plot(self.falseAlarm_rate(), self.hit_rate(), 'b', label = 'AUC = %0.2f' % roc_auc)
+        #plt.legend(loc = 'lower right')
+        #plt.plot([0, 1], [0, 1],'r--')
+        #plt.xlim([0, 1])
+        #plt.ylim([0, 1])
+        #plt.ylabel('True Positive Rate')
+        #plt.xlabel('False Positive Rate')
+        #plt.show()
+
+
+#plots
+sd = SignalDetection(15, 10, 15, 5)
+sd.plot_roc()
+
 
     #def plot_sdt(SignalDetection):
 
@@ -101,7 +144,7 @@ class TestSignalDetection(unittest.TestCase):
     def test_corruption(self):
         sd   = SignalDetection(15, 5, 15, 5)
         obtained_1 = sd.d_prime()
-        sd   = SignalDetection(15, 10, 15, 5)
+        sd.hits = 16
         obtained_2 = sd.d_prime()
         # Compare calculated and expected d-prime
         self.assertNotEqual(obtained_1, obtained_2)
