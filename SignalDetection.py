@@ -42,6 +42,12 @@ class SignalDetection:
         z_falseAlarm = stats.norm.ppf(self.falseAlarm_rate())
         #return criterion
         return -0.5*(z_hit + z_falseAlarm)
+    
+    def __add__(self, other):
+        return SignalDetection(self.hits + other.hits, self.misses + other.misses, self.falseAlarms + other.falseAlarms, self.correctRejections + other.correctRejections)
+
+    def __mul__(self, scalar):
+        return SignalDetection(self.hits * scalar, self.misses * scalar, self.falseAlarms * scalar, self.correctRejections * scalar)
 
     def plot_roc(self):
         threshold_list = np.arange(-10, 10, 0.01)

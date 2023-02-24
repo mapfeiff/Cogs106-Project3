@@ -81,5 +81,13 @@ class TestSignalDetection(unittest.TestCase):
         self.assertRaises(ValueError, sd.d_prime())
         self.assertRaises(ValueError, sd.criterion())
 
+    def test_corruption(self):
+        sd   = SignalDetection(15, 5, 15, 5)
+        obtained_1 = sd.d_prime()
+        sd.hits = 16
+        obtained_2 = sd.d_prime()
+        # Compare calculated and expected d-prime
+        self.assertNotEqual(obtained_1, obtained_2)
+
 if __name__ == '__main__':
     unittest.main()
