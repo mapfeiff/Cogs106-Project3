@@ -46,32 +46,38 @@ class SignalDetection:
         #return criterion
         return -0.5*(z_hit + z_falseAlarm)
     
+    #add two sdt class object together
     def __add__(self, other):
         if(self.__variable_isInvalid() or other.__variable_isInvalid()):
             raise ValueError("SDT values must be positive!")
         return SignalDetection(self.hits + other.hits, self.misses + other.misses, self.falseAlarms + other.falseAlarms, self.correctRejections + other.correctRejections)
 
+    #multiply a sdt class object by a constant
     def __mul__(self, scalar):
         if(self.__variable_isInvalid()):
             raise ValueError("SDT values must be positive!")
         return SignalDetection(self.hits * scalar, self.misses * scalar, self.falseAlarms * scalar, self.correctRejections * scalar)
 
+    #plot the reciever operating characteristic (roc) curve for the sdt class object
     def plot_roc(self):
+        #get the range of the sdt class object to look at
         threshold_list = np.arange(-10, 10, 0.01)
         x_points = []
         y_points = []
+        #get FP and TP at varying threholds to plot the curve
         for threshold in threshold_list:
             FP = 1-stats.norm.cdf(threshold, 0, 1) #noise curve
             TP = 1-stats.norm.cdf(threshold, self.d_prime(), 1) #signal curve
             x_points.append(FP)
             y_points.append(TP)
-
+        #plot the curve
         plt.plot(x_points, y_points, '-', linewidth = 2)
         plt.plot([self.falseAlarm_rate()], [self.hit_rate()], 'o')
         plt.annotate("Classifying Threshold Point", xy = (self.falseAlarm_rate(), self.hit_rate()),
                     xytext=(self.falseAlarm_rate()+0.1, self.hit_rate()-0.1),
                     arrowprops=dict(facecolor='black', shrink=0.05))
         plt.plot([0, 1], [0, 1], '--')
+        #label the graph
         plt.title('Receiver Operating Characteristic')
         plt.xlim([0, 1])
         plt.ylim([0, 1])
@@ -103,18 +109,20 @@ class SignalDetection:
         #d' line
         plt.plot([0, self.d_prime()], [0.4, 0.4], '-', color = "green")
         plt.annotate("d'", xy=(self.d_prime()/2, 0.41), fontsize = 15)
-        
+        #label the graph
         plt.xlabel("Decision Label")
         plt.ylabel("Probability")
         plt.title("Signal Detection Theory Plot")
         plt.ylim(0, 0.5)
         plt.show()
 
+    #private method to test if all variables in the class object are positive
     def __variable_isInvalid(self):
+        #check condition
         if(self.hits <= 0 or 
            self.misses <= 0 or
            self.falseAlarms <= 0 or
            self.correctRejections <= 0):
             return(True)
-        
+        #otherwise, all variables are valid
         return(False)
